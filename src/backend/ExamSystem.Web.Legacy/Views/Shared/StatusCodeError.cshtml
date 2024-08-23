@@ -1,0 +1,45 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.AspNetCore.WebUtilities
+@{
+    Layout = "_CleanLayout";
+    ViewData["PageCenter"] = true;
+    var message = ViewData["ErrorMessage"];
+    var statusCode = ViewData["ErrorCode"];
+    var ignoreCode = false;
+    if (statusCode is int code)
+    {
+        var reasonPhrase = ReasonPhrases.GetReasonPhrase(code);
+        if (reasonPhrase == string.Empty)
+        {
+            ignoreCode = true;
+        }
+    }
+}
+<div class="container container-tight">
+    <div class="empty">
+        @{
+            if (ignoreCode is false)
+            {
+                <div class="empty-header"> @statusCode </div>
+            }
+        }
+        
+        <p class="empty-title">Oops… You just found an error page</p>
+
+        @{
+            if (message is not null)
+            {
+                <p class="empty-subtitle text-secondary">@message</p>
+            }
+        }
+        
+        <div class="empty-action">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0"/><path d="M5 12l6 6"/><path d="M5 12l6 -6"/>
+                </svg>
+                Take me home
+            </a>
+        </div>
+    </div>
+</div>

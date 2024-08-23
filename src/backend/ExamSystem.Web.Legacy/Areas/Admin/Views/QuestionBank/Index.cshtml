@@ -1,0 +1,284 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ExamSystem.Web.Models.TabularViewModel
+
+@section Styles {
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="~/tabler/css/tabler.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="~/lib/flatpicker/flatpickr.min.css" rel="stylesheet" />
+    <link href="~/lib/flatpicker/themes/dark.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.min.css" rel="stylesheet">
+    <partial name="_TabulatorPartial" />
+
+    <style>
+        .p-header {
+            background: linear-gradient(to right, rgb(113, 30, 96), rgb(32, 119, 187));
+        }
+
+        :root {
+            --tblr-font-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+        }
+
+        body {
+            font-feature-settings: "cv03", "cv04", "cv11";
+        }
+
+        .tabulator, .tabulator-col-content {
+            text-align: center;
+        }
+
+            .tabulator .tabulator-alert .tabulator-alert-msg {
+                display: inline-block;
+                font-size: 16px;
+                font-weight: 700;
+                margin: 0 auto;
+                border: none !important;
+                background-color: rgb(113, 30, 96) !important;
+                color: white !important;
+                padding: 20px 60px;
+            }
+
+        .custom-btn:hover {
+            transform: scale(1.2);
+            transition: transform 0.2s ease-in-out;
+        }
+
+    </style>
+}
+
+<div class="container  m-3">
+    <div class="card">
+        <div class="card-header">
+            <h2>Question Bank</h2>
+        </div>
+
+        <div class="card-body">
+            <div class=" border-2 rounded-1 " id="question-bank-table"></div>
+        </div>
+
+        <div class="card-footer">
+        </div>
+    </div> 
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+    <script src="~/tabler/js/tabler.min.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://kit.fontawesome.com/3ae1ad0474.js" crossorigin="anonymous"></script>
+    <script src="~/lib/flatpicker/flatpickr.min.js"></script>
+    <a href="~/lib/luxon/build/global/luxon.js.map"></a>
+    <a href="~/lib/luxon/build/global/luxon.min.js.map"></a>
+    <script src="~/lib/luxon/build/global/luxon.min.js"></script>
+    <script src="~/lib/luxon/build/global/luxon.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>
+    <script>
+
+        var singleDateEditor = function (cell, onRendered, success, cancel, editorParams) {
+            var editor = document.createElement("input");
+            editor.setAttribute("type", "text");
+            editor.style.cssText = "width:100%; height:100%;";
+
+            onRendered(function () {
+                flatpickr(editor, {
+                    enableTime: false,
+                    dateFormat: "d/m/Y",
+                    onClose: function (selectedDates, dateStr, instance) {
+                        if (selectedDates.length) {
+                            success(dateStr);
+                        } else {
+                            cancel();
+                        }
+                    }
+                });
+
+                editor.focus();
+            });
+
+            return editor;
+        };
+
+        const table = new Tabulator("#question-bank-table", {
+            pagination: true,
+            paginationCounter: "rows",
+            paginationMode: "remote",
+            filterMode: "remote",
+            sortMode: "remote",
+            paginationSize: 15,
+            paginationSizeSelector: [15, 25, 35, 50],
+            ajaxURL: "@Model.EndpointUrl",
+            ajaxContentType: "json",
+            ajaxConfig: {
+                method: "POST",
+            },
+            height: 600,
+            layout: "fitColumns",
+            columns: [
+                {
+                    title: "Id",
+                    field: "id",
+                    headerSort: false,
+                    visible: false
+                },
+                {
+                    title: "Question",
+                    field: "questionTitle",
+                    sorter: "string",
+                    headerFilter: "input",
+                    headerFilterFunc: "like",
+                    headerFilterPlaceholder: "Enter question"
+                },
+                {
+                    title: "Difficulty level",
+                    field: "difficulty",
+                    sorter: "string",
+                    headerFilterPlaceholder: "Select level",
+                    headerFilterFunc: "=",
+                    headerSortTristate: true,
+                    headerFilter: "list",
+                    headerFilterParams: {
+                        values: {
+                            Easy: "Easy",
+                            Medium: "Medium",
+                            Hard: "Hard",
+                            "": "All"
+                        },
+                        clearable: true
+                    },
+                },
+                {
+                    title: "Tags",
+                    field: "tags",
+                    headerFilter: "list",
+                    headerFilterFunc: "=",
+                    headerFilterPlaceholder: "Select tag",
+                    headerFilterParams: {
+                        values: {
+                            "C#": "C#",
+                            "Asp.Net": "Asp.Net",
+                            "CSS": "CSS",
+                            "HTML": "HTML",
+                            "":"All"                           
+                        },
+                        clearable: true
+                    }
+                },
+                {
+                    title: "Created date",
+                    field: "createdAt",
+                    headerFilterPlaceholder: "Enter date",
+                    sorter: "datetime",
+                    sorterParams: { format: "DD/MM/YYYY" },
+                    formatter: function (cell) {
+                        var value = cell.getValue();
+                        return luxon.DateTime.fromISO(value).toFormat("dd/MM/yyyy");
+                    },
+                    headerFilter: singleDateEditor,
+                    headerFilterFunc: ">="
+                },
+                {
+                    title: "Modified date",
+                    field: "modifiedAt",
+                    headerFilterPlaceholder: "Enter date",
+                    sorter: "datetime",
+                    sorterParams: { format: "DD/MM/YYYY" },
+                    formatter: function (cell) {
+                        var value = cell.getValue();
+                        return luxon.DateTime.fromISO(value).toFormat("dd/MM/yyyy");
+                    },
+                    headerFilter: singleDateEditor,
+                    headerFilterFunc: ">="
+                },
+                {
+                    title: "Action",
+                    widt: 100,
+                    formatter: actionFormatter,
+                    headerSort: false,
+                },
+            ],
+
+        });
+
+        table.on("rowClick", function (e, row) {
+            var rowData = row.getData();
+            var columnValue = rowData.questionTitle;
+            alert(columnValue);
+        });
+
+        function actionFormatter(cell, formatterParams, onRendered) {
+            const rowId = cell.getRow().getData();
+
+            return `
+                <div class="row justify-content-between">
+                    <button class='col-md-3 btn btn-primary p-2 edit-btn d-inline mr-2 custom-btn' onclick="editQuestion(event, '${rowId.id}')">
+                        <i class="fa-solid fa-eye "></i>
+                    </button>
+                            <button class='col-md-3 btn btn-warning p-2 edit-btn d-inline mr-2 custom-btn' onclick="editQuestion(event, '${rowId.id}')">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                            <button class='col-md-3 btn btn-danger p-2 delete-btn d-inline custom-btn' onclick="deleteQuestion(event, '${rowId.id}')">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        function editQuestion(event, id) {
+            event.stopPropagation();
+            window.location.href = `/Admin/Question-Bank/Edit/${id}`;
+        }
+
+        function deleteQuestion(event, id) {
+            event.stopPropagation();
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: "btn btn-danger"
+                },
+                buttonsStyling: true
+            });
+            swalWithBootstrapButtons.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "No, cancel!",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/Admin/Question-Bank/Delete/${id}`,
+                        type: 'POST',
+                        success: function (result) {
+                            swalWithBootstrapButtons.fire({
+                                title: "Deleted!",
+                                text: "Your file has been deleted.",
+                                icon: "success"
+                            });
+                            table.setData();
+                        },
+                        error: function (err) {
+                            Swal.fire({
+                                title: "Error!",
+                                text: "There was an error deleting the question.",
+                                icon: "error"
+                            });
+                        }
+                    });
+                } else if (
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire({
+                        title: "Cancelled",
+                        text: "Your imaginary file is safe :)",
+                        icon: "error"
+                    });
+                }
+            });
+        }
+    </script>
+}

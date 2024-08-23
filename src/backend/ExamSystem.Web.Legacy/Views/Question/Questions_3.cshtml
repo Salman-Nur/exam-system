@@ -1,0 +1,141 @@
+﻿@{
+    ViewBag.Title = "Questions";
+    Layout = "_Layout";
+}
+
+<link href="~/style/exam-questions.css" rel="stylesheet" />
+
+<div class="quiz-container">
+    <h1 class="text-center">Quiz Time!</h1>
+    <div class="d-flex justify-content-between shadow-sm p-3 mb-5 bg-white rounded">
+        <div class="timer" id="timer">00:20</div>
+        <div class="score" id="score"><p>Points: 10</p></div>
+    </div>
+    
+    <div id="questionContainer" class="shadow-lg p-3 mb-5 bg-white rounded">
+    </div>
+
+    <div class="navigation-buttons mt-4">
+        <button class="btn btn-primary" id="prevBtn" disabled>Previous</button>
+        <button class="btn btn-primary" id="nextBtn">Next</button>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    var questions = [
+        {
+            question: "What does the following code snippet output?",
+            code: `Console.WriteLine("Hello, World!");`,
+            image: "",
+            options: [
+                { text: "Hello, World!", image: "", snippet: "" },
+                { text: "", image: "https://miro.medium.com/v2/resize:fit:1400/1*bIyYOZuAIQKF82ewQODeHg.png", snippet: "" },
+                { text: "Goodbye, World!", image: "", snippet: "" },
+                { text: "None of the above", image: "", snippet: "" }
+            ]
+        },
+        {
+            question: "What does the following code snippet output?",
+            code: ``,
+            image: "https://miro.medium.com/v2/resize:fit:1400/1*0KFB17_NGTPB0XWyc4BSgQ.jpeg",
+            options: [
+                { text: "", image: "", snippet: `Console.WriteLine("Bye, World!");` },
+                { text: "", image: "https://miro.medium.com/v2/resize:fit:1400/1*bIyYOZuAIQKF82ewQODeHg.png", snippet: "" },
+                { text: "Goodbye, World!", image: "", snippet: "" },
+                { text: "None of the above", image: "", snippet: "" }
+            ]
+        },
+        {
+            question: "What is the capital of France?",
+            code: ``,
+            image: "",
+            options: [
+                { text: "Hello, World!", image: "", snippet: "" },
+                { text: "Hello, Universe!", image: "", snippet: "" },
+                { text: "Goodbye, World!", image: "", snippet: "" },
+                { text: "None of the above", image: "", snippet: "" }
+            ]
+        },
+    ];
+
+    var currentQuestionIndex = 0;
+    var userAnswers = {}; 
+
+    function renderQuestion(index) {
+        const question = questions[index];
+        var questionHTML = `
+                <div class="question mb-4">
+                    <p>${question.question}</p>
+                    ${question.code ? `<div class="code-snippet mb-3"><pre>${question.code}</pre></div>` : ''}
+                    ${question.image ? `<img id="question-image" src="${question.image}" alt="Question Image" class="img-fluid mb-3">` : ''}
+                </div>
+                <div class="options mb-4">
+            `;
+
+        question.options.forEach((option, i) => {
+            const isChecked = userAnswers[index] === option.text ? 'checked' : ''; // Check if the option was previously selected
+            questionHTML += `
+                <div class="form-check shadow-sm p-3 mb-5 bg-white rounded">
+                    <input class="form-check-input" type="radio" name="option" id="option${i}" value="${option.text}" ${isChecked}>
+                    <label class="form-check-label" for="option${i}">
+                        ${option.text ? `<div>${option.text}</div>` : ''}
+                        ${option.snippet ? `<div class="code-snippet mb-3"><pre>${option.snippet}</pre></div>` : ''}
+                        ${option.image ? `<img id="option-image" src="${option.image}" alt="Option ${i} Image" class="img-fluid mt-2">` : ''}
+                    </label>
+                </div>
+            `;
+        });
+
+        questionHTML += `</div>`;
+        $('#questionContainer').html(questionHTML);
+    }
+
+    function updateButtons() {
+        $('#prevBtn').prop('disabled', currentQuestionIndex === 0);
+        $('#nextBtn').text(currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next');
+    }
+
+    $(document).ready(function () {
+        let timeLeft = 20;
+        const timerElement = $('#timer');
+        const submitBtn = $('#nextBtn');
+        const timer = setInterval(function () {
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                alert('Time is up!');
+                submitBtn.click();
+            } else {
+                timerElement.text('00:' + (timeLeft < 10 ? '0' : '') + timeLeft);
+                timeLeft--;
+            }
+        }, 1000);
+
+        $('#questionContainer').on('change', 'input[name="option"]', function () {
+            userAnswers[currentQuestionIndex] = $(this).val(); 
+        });
+
+        renderQuestion(currentQuestionIndex);
+        updateButtons();
+
+        $('#prevBtn').on('click', function () {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion(currentQuestionIndex);
+                updateButtons();
+            }
+        });
+
+        $('#nextBtn').on('click', function () {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion(currentQuestionIndex);
+                updateButtons();
+            } else {
+                clearInterval(timer);
+                $('#nextBtn').prop('disabled', true);
+                alert('Quiz submitted!');
+            }
+        });
+    });
+</script>

@@ -1,0 +1,153 @@
+﻿@{
+    ViewBag.Title = "All Questions";
+    Layout = "_Layout";
+}
+
+<link href="~/style/exam-all-question.css" rel="stylesheet" />
+
+<div class="quiz-container">
+    <h1 class="text-center">Quiz Time!</h1>
+    <div class="d-flex justify-content-between shadow-sm p-3 mb-5 bg-white rounded">
+        <div class="timer" id="timer">00:20</div>
+        <div class="score" id="score"><p>Points: 10</p></div>
+    </div>
+    <div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <div class="question mb-4 ">
+            <p>What is the capital of France?</p>
+            <img id="question-image" src="https://miro.medium.com/v2/resize:fit:1400/1*0KFB17_NGTPB0XWyc4BSgQ.jpeg" alt="Sample Image" class="img-fluid mb-3">
+        </div>
+        <div class="options mb-4">
+            <div class="form-check shadow-sm p-3 mb-5 bg-white rounded">
+                <input class="form-check-input" type="radio" name="optionA" id="optionA" value="A">
+                <label class="form-check-label" for="optionA">
+                    A. Berlin
+                </label>
+            </div>
+            <div class="form-check shadow-sm p-3 mb-5 bg-white rounded">
+                <input class="form-check-input" type="radio" name="optionB" id="optionB" value="B">
+                <label class="form-check-label" for="optionB">
+                    B. Madrid
+                </label>
+            </div>
+            <div class="form-check shadow-sm p-3 mb-5 bg-white rounded">
+                <input class="form-check-input" type="radio" name="optionC" id="optionC" value="C">
+                <label class="form-check-label" for="optionC">
+                    C. Paris
+                </label>
+            </div>
+            <div class="form-check shadow-sm p-3 mb-5 bg-white rounded">
+                <input class="form-check-input" type="radio" name="optionD" id="optionD" value="D">
+                <label class="form-check-label" for="optionD">
+                    D. Rome
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <div class="question mb-4">
+            <p>What is the capital of Bangladesh?</p>
+        </div>
+        <div class="options mb-4">
+            <div class="form-check shadow-sm p-3 mb-5 bg-white rounded">
+                <input class="form-check-input" type="radio" name="optionE" id="optionE" value="A">
+                <label class="form-check-label" for="optionE">
+                    A. Noakhali
+                </label>
+            </div>
+            <div class="form-check shadow-sm p-3 mb-5 bg-white rounded">
+                <input class="form-check-input" type="radio" name="optionF" id="optionF" value="B">
+                <label class="form-check-label" for="optionF">
+                    B. Dhaka
+                </label>
+            </div>
+            <div class="form-check shadow-sm p-3 mb-5 bg-white rounded">
+                <input class="form-check-input" type="radio" name="optionG" id="optionG" value="C">
+                <label class="form-check-label" for="optionG">
+                    C. Barisal
+                </label>
+            </div>
+            <div class="form-check shadow-sm p-3 mb-5 bg-white rounded">
+                <input class="form-check-input" type="radio" name="optionH" id="optionH" value="D">
+                <label class="form-check-label" for="optionH">
+                    D. Chittagong
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <div class="question mb-4">
+            <p>What does the following code snippet output?</p>
+            <div class="code-snippet mb-3">
+                <pre>
+                    Console.WriteLine("Hello World");
+                </pre>
+            </div>
+        </div>
+        <div class="options mb-4">
+            <div class="form-check shadow-sm p-3 mb-5 bg-white rounded">
+                <input class="form-check-input" type="radio" name="optionI" id="optionI" value="A">
+                <label class="form-check-label" for="optionI">
+                    <img id="option-image" src="https://miro.medium.com/v2/resize:fit:1400/1*bIyYOZuAIQKF82ewQODeHg.png" alt="Option A Image" class="img-fluid mt-2">
+                </label>
+            </div>
+            <div class="form-check shadow-sm p-3 mb-5 bg-white rounded">
+                <input class="form-check-input" type="radio" name="optionJ" id="optionJ" value="B">
+                <label class="form-check-label" for="optionJ">
+                    <div>Hello, Universe!</div>
+                </label>
+            </div>
+            <div class="form-check shadow-sm p-3 mb-5 bg-white rounded">
+                <input class="form-check-input" type="radio" name="optionK" id="optionK" value="C">
+                <label class="form-check-label" for="optionK">
+                    <div class="code-snippet mb-3">
+                        <pre>
+                            Console.WriteLine("Hello, World User!");
+                        </pre>
+                    </div>
+                </label>
+            </div>
+            <div class="form-check shadow-sm p-3 mb-5 bg-white rounded">
+                <input class="form-check-input" type="radio" name="optionL" id="optionL" value="D">
+                <label class="form-check-label" for="optionL">
+                    <div>None of the above</div>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <button class="btn submit-btn" id="submitBtn" >Submit</button>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var timeLeft = 20;
+
+        var timerElement = $('#timer');
+        var submitBtn = $('#submitBtn');
+        var timer = setInterval(function () {
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                alert('Time is up!');
+                submitBtn.click();
+            } else {
+                timerElement.text('00:' + (timeLeft < 10 ? '0' : '') + timeLeft);
+                timeLeft--;
+            }
+        }, 1000);
+
+        submitBtn.on('click', function () {
+            clearInterval(timer);
+            var selectedOptions = [];
+            $('input[type="radio"]:checked').each(function () {
+                selectedOptions.push($(this).val());
+            });
+            submitBtn.prop('disabled', true);
+            alert('Form Submitted!');   
+        });
+    });
+</script>

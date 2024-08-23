@@ -1,0 +1,83 @@
+<div class="d-flex justify-content-center flex-column min-vh-100">
+  <div class="container container-tight">
+    <div class="card card-md">
+      <div class="card-body">
+        <h2 class="h2 text-center mb-4">Login to your account</h2>
+        @if ($serverSideErrors().length > 0) {
+          <div class="row my-3">
+            <div class="col">
+              <div class="card">
+                <div class="card-status-top bg-danger"></div>
+                <div class="card-body">
+                  <ul class="text-danger validation-error-summaries">
+                    @for (err of $serverSideErrors(); track $index) {
+                      <li>{{ err }}</li>
+                    }
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
+          <div class="mb-3">
+            <label [for]="'email'" class="form-label required">Email address</label>
+            <input
+              [formControl]="email"
+              ngxBootstrapInput
+              idValue="email"
+              [autoCompleteValue]="false"
+              typeValue="email"
+              placeholderValue="Enter email"
+              [isInInvalidStateValue]="reactiveFormUtils.hasValidationError(email)"
+            />
+            @if (reactiveFormUtils.hasValidationError(email)) {
+              <small class="text-danger fw-medium">
+                <div *ngIf="email.hasError('required')">Email is required.</div>
+                <div *ngIf="email.hasError('email')">Email must be valid.</div>
+              </small>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label required" [for]="'password'">
+              Password
+              <span class="form-label-description">
+                <a [routerLink]="$$absoluteRoutes().FORGOT_PASSWORD">I forgot my password</a>
+              </span>
+            </label>
+            <bootstrap-password-input
+              [formControl]="password"
+              [isInErrorState]="reactiveFormUtils.hasValidationError(password)"
+              idValue="password" />
+            @if (reactiveFormUtils.hasValidationError(password)) {
+              <small class="text-danger fw-medium">
+                <div *ngIf="password.hasError('required')">Password is required.</div>
+                <div *ngIf="password.hasError('maxlength')">Password should be smaller.</div>
+                <div *ngIf="password.hasError('minlength')">Password is too short.</div>
+              </small>
+            }
+          </div>
+          <div class="mb-2">
+            <label class="form-check">
+              <input [formControl]="rememberMe" class="form-check-input" type="checkbox" />
+              <span class="form-check-label">Remember me</span>
+            </label>
+          </div>
+          <div class="form-footer">
+            <button
+              [disabled]="reactiveFormUtils.disableFormSubmission(loginForm)"
+              class="btn btn-primary w-100"
+              type="submit">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="text-center text-muted mt-3">
+      Don't have account yet?
+      <a [routerLink]="$$absoluteRoutes().SIGNUP" tabindex="-1">Sign up</a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,133 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ExamSystem.Web.Areas.Admin.Models.TabularViewModel;
+@{
+	ViewBag.Title = "Log Data";
+	Layout = "_Layout";
+}
+@section Styles {
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link href="~/tabler/css/tabler.min.css" rel="stylesheet" asp-append-version="true" />
+	<link rel="stylesheet" href="~/lib/tabulator/dist/css/tabulator_bootstrap5.min.css" asp-append-version="true" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+	<link href="~/lib/flatpicker/flatpickr.min.css" rel="stylesheet" />
+	<link href="~/lib/flatpicker/themes/dark.css" rel="stylesheet" />
+}
+
+<partial name="_SweetAlert2Partial" />
+<div class="card p-2 m-2" >
+	<div class="card-body text-center shadow p-3 mb-5 bg-white rounded">
+		<h3 class="card-title">Log Table </h3>
+		<div id="log-table" class="shadow-sm p-3 mb-5 bg-white rounded"></div>
+	</div>
+</div>
+
+@section Scripts {
+	<script src="~/lib/flatpicker/flatpickr.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+	<script src="~/tabler/js/tabler.min.js" asp-append-version="true"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+	<script src="~/lib/tabulator/dist/js/tabulator.min.js" asp-append-version="true"></script>
+	<script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script>
+
+		document.addEventListener('DOMContentLoaded', function () {
+			var singleDateEditor = function (cell, onRendered, success, cancel, editorParams) {
+				var editor = document.createElement("input");
+				editor.setAttribute("type", "text");
+				editor.style.cssText = "width:100%; height:100%;";
+				onRendered(function () {
+					flatpickr(editor, {
+						enableTime: true,
+						dateFormat: "d/m/Y H:i",
+						onClose: function (selectedDates, dateStr, instance) {
+							if (selectedDates.length) {
+								success(dateStr);
+							} else {
+								cancel();
+							}
+						}
+					});
+					editor.focus();
+				});
+				return editor;
+			};
+
+			var table = new Tabulator("#log-table", {
+				pagination: true,
+				paginationCounter: "rows",
+				paginationMode: "remote",
+				filterMode: "remote",
+				sortMode: "remote",
+				paginationSize: 15,
+				paginationSizeSelector: [15, 25, 35, 50],
+				height: 500,
+				layout: "fitColumns",
+				ajaxURL: "@Model.EndpointUrl",
+				ajaxContentType: "json",
+				ajaxConfig: {
+					method: "POST",
+				},
+				columns: [
+					{title: "Id", field: "id", sorter: "number", headerFilter: "number", headerFilterFunc: "="},
+					{title: "Message", field: "message", sorter: "string", headerFilterFunc: "like", headerFilter: "input"},
+					{title: "Log Level", field: "levelName", sorter: "string", headerFilterFunc: "=", headerFilter: "list",
+						headerFilterParams: {
+							values: {
+								Trace: "Trace",
+								Debug: "Debug",
+								Information: "Information",
+								Warning: "Warning",
+								Error: "Error",
+								Critical: "Critical",
+								"": "All",
+							},
+						},
+					},
+					{title: "Time", field: "time", hozAlign: "center", width: 200, sorter: "datetime", sorterParams: { format: "DD/MM/YYYY hh:mm A" },
+						formatter: function (cell) {
+							var value = cell.getValue();
+							return luxon.DateTime.fromISO(value).toFormat("dd/MM/yyyy hh:mm a");
+						},
+						headerFilter: singleDateEditor, headerFilterFunc: ">=", headerFilterPlaceholder: "DD/MM/YYYY hh:mm AM/PM"
+					},
+					{title: "Action", field: "id", formatter: function (cell, formatterParams) {
+							var obj = cell.getRow().getData();
+							return `<button class='btn btn-sm btn-primary' onclick='viewLog("${cell.getRow().getIndex()}")'>View</button>`;
+						}
+					}
+				],
+			});
+		});
+
+		function viewLog(rowId) {
+			var table = Tabulator.findTable("#log-table")[0];
+			var rowData = table.getRow(rowId).getData();
+
+			Swal.fire({
+				title: 'Log Details',
+				text: `ID: ${rowData.id} Message: ${rowData.message} Log Level: ${rowData.levelName} Time: ${luxon.DateTime.fromISO(rowData.time).toFormat('yyyy-MM-dd HH:mm:ss')}`,
+				icon: 'question',
+				showCancelButton: true,
+				confirmButtonText: 'Copy it!',
+				cancelButtonText: 'Cancel'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					const textToCopy = `ID: ${rowData.id}\nMessage: ${rowData.message}\nLog Level: ${rowData.levelName}\nTime: ${luxon.DateTime.fromISO(rowData.time).toFormat('yyyy-MM-dd HH:mm:ss')}`;
+					const tempTextArea = document.createElement('textarea');
+					tempTextArea.value = textToCopy;
+					document.body.appendChild(tempTextArea);
+					tempTextArea.select();
+					document.execCommand('copy');
+					document.body.removeChild(tempTextArea);
+					Swal.fire('Copied!', 'Text copied to your clipboard.', 'success');
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					Swal.fire('Cancelled', 'Your text is safe :)', 'error');
+				}
+			});
+		}
+	</script>
+}

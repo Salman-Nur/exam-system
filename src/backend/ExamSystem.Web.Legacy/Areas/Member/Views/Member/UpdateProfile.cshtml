@@ -1,0 +1,148 @@
+﻿@{
+	ViewBag.Title = "Update Profile";
+	Layout = "_Layout";
+}
+
+<style>
+	#image {
+		width: 80%;
+		max-width: 250px;
+		height: auto; 
+		aspect-ratio: 3 / 4;
+		border-radius: 50%; 
+		object-fit: cover; 
+	}
+	#fileInput {
+		display: none;
+	}
+	#openImgUpload {
+		display: block;
+		margin: 20px auto;
+		cursor: pointer;
+		text-decoration: underline;
+	}
+</style>
+
+<div class="row row-cards mt-2">
+	<div class="col-1"></div>
+	<div class="col-10 shadow p-3 mb-5 bg-white rounded">
+		<form class="card">
+			<div class="card-body">
+				<h3 class="card-title">Edit Profile</h3>
+				<div class="row row-cards">
+					<div class="col-md-1">
+						<div class="mb-3">
+							<img id="image" src="https://i.pinimg.com/736x/ba/92/7f/ba927ff34cd961ce2c184d47e8ead9f6.jpg" class="" placeholder="your image" />
+						</div>
+					</div>
+					<div class="col-md-5">
+						<div class="mb-3">
+							<input type="file" id="fileInput" class="form-control" >
+							<a href="#" id="openImgUpload">Change Profile Picture</a>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="mb-3">
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="mb-3">
+							<label class="form-label">Mobile No</label>
+							<input type="tel" class="form-control" placeholder="016..." value="">
+						</div>
+					</div>
+					<div class="col-sm-6 col-md-3">
+						<div class="mb-3">
+							<label class="form-label">Username</label>
+							<input type="text" class="form-control" placeholder="your username" value="abdur@gmail.com" disabled="">
+						</div>
+					</div>
+					<div class="col-sm-6 col-md-5">
+						<div class="mb-3">
+							<label class="form-label">Email address</label>
+							<input type="email" class="form-control" placeholder="youremail@gmail.com">
+						</div>
+					</div>
+					<div class="col-sm-5 col-md-5">
+						<div class="mb-3">
+							<label class="form-label">First Name</label>
+							<input type="text" class="form-control" placeholder="First Name" value="Abdur ">
+						</div>
+					</div>
+					<div class="col-sm-5 col-md-5">
+						<div class="mb-3">
+							<label class="form-label">Last Name</label>
+							<input type="text" class="form-control" placeholder="Last Name" value="Rahman">
+						</div>
+					</div>
+					<div class="col-sm-2 col-md-2">
+						<div class="mb-3">
+							<div class="form-label">Gender</div>
+							<select class="form-select">
+								<option value="Male">Male</option>
+								<option value="Female">Female</option>
+								<option value="Other">Other</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="mb-3">
+							<label class="form-label">Address</label>
+							<input type="text" class="form-control" placeholder="Home Address"
+									value="">
+						</div>
+					</div>
+					<div class="col-sm-6 col-md-4">
+						<div class="mb-3">
+							<label class="form-label">City</label>
+							<input type="text" class="form-control" placeholder="Ex: Chittagong" value="">
+						</div>
+					</div>
+					<div class="col-sm-6 col-md-3">
+						<div class="mb-3">
+							<label class="form-label">Postal Code</label>
+							<input type="test" class="form-control" placeholder="ZIP Code">
+						</div>
+					</div>
+					<div class="col-md-5">
+						<div class="mb-3">
+							<label class="form-label">Country</label>
+							<input type="test" class="form-control" placeholder="Ex: Bangladesh..">
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="mb-3 mb-0">
+							<label class="form-label">About Me</label>
+							<textarea rows="5" class="form-control" placeholder="Here can be your description"
+										value="">Hey, I am a student of DevSkill
+							</textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card-footer text-end">
+				<button type="submit" class="btn btn-primary">Update Profile</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+<script>
+	$(document).ready(function () {
+		document.getElementById('openImgUpload').addEventListener('click', function () {
+			document.getElementById('fileInput').click();
+		});
+
+		document.getElementById('fileInput').addEventListener('change', function (event) {
+			const file = event.target.files[0];
+			if (file) {
+				const reader = new FileReader();
+				reader.onload = function (e) {
+					document.getElementById('image').src = e.target.result;
+				}
+				reader.readAsDataURL(file);
+			}
+		});
+	});
+</script>

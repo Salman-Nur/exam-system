@@ -1,0 +1,71 @@
+@using ExamSystem.Infrastructure.Identity.Managers
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject SignInManager<ApplicationIdentityUser> SignInManager
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    @await RenderSectionAsync("HeadMeta", required: false)
+    @{
+        var titleText = ViewData["Title"] ?? Context.Request.Path.Value?.Split('/').Last();
+        <title>@titleText - ExamSystem</title>
+    }
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link href="~/tabler/css/tabler.min.css" rel="stylesheet" asp-append-version="true"/>
+
+    @await RenderSectionAsync("Libraries", required: false)
+    @await RenderSectionAsync("ScriptsOnHead", required: false)
+    <style>
+        :root {
+            --tblr-font-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+        }
+
+        body {
+            font-feature-settings: "cv03", "cv04", "cv11";
+        }
+
+        pre code {
+            tab-size: 2;
+        }
+
+        .validation-summary-errors ul {
+            margin-bottom: 0;
+        }
+
+    </style>
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+
+<body>
+@{
+    var centerPageIndicator = (bool)(ViewData["PageCenter"] ?? false);
+    var classOfPageDiv = centerPageIndicator ? "page page-center" : "page";
+}
+@if (SignInManager.IsSignedIn(User))
+{
+    <partial name="_NavbarPartial"/>
+}
+else
+{
+    <partial name="_LoginPartial"/>
+}
+<div class="@classOfPageDiv">
+    @RenderBody()
+</div>
+
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+<script src="~/tabler/js/tabler.min.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,119 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ExamSystem.Web.Areas.Admin.Models.ProfileUpdateModel
+@{
+    ViewData["Title"] = "UpdateProfile";
+}
+
+<body>
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="row justify-content-center">
+                <div class="col-10">
+                    <form asp-action="UpdateProfile" asp-controller="Member" asp-area="Admin" class="card"
+                          asp-antiforgery="true">
+                        <div class="card-header">
+                            <h1 class="card-title">Update Member Profile</h1>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-xl-6">
+                                    <div class="row">
+                                        <div class="col-md-6 col-xl-12">
+                                            <div class="mb-3">
+                                                <label class="form-label">Full Name</label>
+                                                <input type="text" class="form-control" name="FullName" value="@Model.FullName" />
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Email</label>
+                                                <input type="email" class="form-control" name="Email" value="@Model.Email" />
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Mobile Number</label>
+                                                <div class="input-group d-flex justify-content-between">
+                                                    <select id="countryCode" class="form-select" onchange="updateCountryCodeDisplay()">
+                                                        <option value="+880" data-country="Bangladesh">Bangladesh(+880)</option>
+                                                        <option value="+91" data-country="India">India(+91)</option>
+                                                        <option value="+92" data-country="Pakistan">Pakistan(+92)</option>
+                                                        <option value="+977" data-country="Nepal">Nepal(+977)</option>
+                                                    </select>
+                                                    <div class="col-md-9">
+                                                        <input id="phoneNumber" name="MobileNumber" type="text" class="form-control" value="@Model.PhoneNumber">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Password</label>
+                                                <input type="password" class="form-control" name="Password" value="@Model.Password" />
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Confirm Password</label>
+                                                <input type="password" class="form-control" name="ConfirmPassword" value="@Model.ConfirmPassword" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 offset-xl-1">
+                                    <div class="row">
+                                        <div class="col-md-6 col-xl-12">
+                                            <div class="mb-3">
+                                                <div class="form-label">Assign Claims</div>
+                                                @foreach (var claim in Model.AllClaims)
+                                                {
+                                                    var isChecked = Model.UserClaims.Contains(claim) ? "checked" : "";
+                                                    var description = Model.ClaimDescriptions.ContainsKey(claim) ? Model.ClaimDescriptions[claim] : "";
+                                                    <label class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" @isChecked>
+                                                        <span class="form-check-label">@claim</span>
+                                                        @if (!string.IsNullOrEmpty(description))
+                                                        {
+                                                            <span class="form-check-description d-block">
+                                                                @description
+                                                            </span>
+                                                        }
+                                                    </label>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-xl-12">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-end">
+                            <div class="d-flex">
+                                <button type="submit" class="btn btn-primary ms-auto">Update</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    function updateCountryCodeDisplay() {
+        var select = document.getElementById("countryCode");
+        var selectedOption = select.options[select.selectedIndex];
+        var countryCode = selectedOption.value;
+        var countryName = selectedOption.getAttribute("data-country");
+        select.options[select.selectedIndex].text = countryName + "(" + countryCode + ")";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var select = document.getElementById("countryCode");
+        var initialOption = select.options[select.selectedIndex];
+        var countryCode = initialOption.value;
+        select.options[select.selectedIndex].text = countryCode;
+
+        select.addEventListener("focus", function () {
+            updateCountryCodeDisplay();
+        });
+
+        select.addEventListener("blur", function () {
+            var selectedOption = select.options[select.selectedIndex];
+            var countryCode = selectedOption.value;
+            select.options[select.selectedIndex].text = countryCode;
+        });
+    });
+</script>

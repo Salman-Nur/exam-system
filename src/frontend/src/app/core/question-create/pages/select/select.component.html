@@ -1,0 +1,18 @@
+<div class="mb-3">
+        <label class="form-label required">Tags</label>
+
+        <ng-select
+	      [addTag]="true"
+	      multiple="true"
+	      [loading]="loading"
+        (change)="onChange()"
+        (add)="onAdd($event)"
+        (remove)="onRemove($event)"
+        placeholder="Select a tag">
+                @for (item of tagOptions; track $index) {
+                        <ng-option [value]="item.id">{{ item.name }}</ng-option>
+                }
+	<ng-template ng-tag-tmp let-search="searchTerm"> <b>Create a new tag</b>: {{ search }} </ng-template>
+        </ng-select>
+
+</div>

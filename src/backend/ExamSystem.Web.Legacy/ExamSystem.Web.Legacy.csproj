@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>aspnet-ExamSystem.Web-7B82B0CC-094E-481F-955C-464079FBF08B</UserSecretsId>
+        <RootNamespace>ExamSystem.Web</RootNamespace>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="AspNetCore.ReCaptcha" Version="1.8.1" />
+        <PackageReference Include="Bogus" Version="35.5.1" />
+        <PackageReference Include="DevSkill.AWS" Version="8.0.55" />
+        <PackageReference Include="DotNetEnv" Version="3.0.0" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.2" />
+        <PackageReference Include="Mapster.Async" Version="2.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.6" />
+        <PackageReference Include="SharpOutcome" Version="0.0.9" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.4.2" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\DevSkill.AWS\DevSkill.AWS.csproj" />
+      <ProjectReference Include="..\ExamSystem.Infrastructure\ExamSystem.Infrastructure.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Account\ConfirmAccount.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\ForgotPassword.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\Login.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\RegistrationInformation.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\ResendVerificationCode.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\ResetPassword.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\Signup.cshtml" />
+    </ItemGroup>
+
+</Project>

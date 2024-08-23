@@ -1,0 +1,46 @@
+.gradient-background {
+    background: linear-gradient(to right, rgb(113, 30, 96), rgb(32, 119, 187));
+    color: white;
+}
+
+    .gradient-background h1,
+    .gradient-background h3,
+    .gradient-background p,
+    .gradient-background ul,
+    .gradient-background li,
+    .gradient-background strong {
+        color: white;
+    }
+
+.header {
+    background: linear-gradient(to right, rgb(113, 30, 96), rgb(32, 119, 187));
+    color: white;
+    padding: 10px 0;
+    text-align: left;
+}
+
+.instruction-text {
+    font-size: 1.2em;
+    margin: 0 auto;
+    max-width: 90%;
+    text-align: left;
+    display: inline-block;
+}
+
+.btn-submit {
+    background-color: rgb(113, 30, 96);
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 5px;
+}
+
+.btn-submit:hover {
+    background-color: #0056b3;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-submit:focus {
+    outline: none;
+}

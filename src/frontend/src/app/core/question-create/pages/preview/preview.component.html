@@ -1,0 +1,42 @@
+<button appButton class=" mt-3 w-30" type="button" (click)="[openLg(content), save()]"
+	[disabled]="disabled">Preview</button>
+
+<ng-template #content let-modal>
+	<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	<div class="modal-body text-wrap">
+<!--		@for (item of previewValue.tags; track $index) {-->
+<!--			<span class="badge badge-dark me-1">{{item}}</span>-->
+<!--		}-->
+		<h2 class="custom-text-wrapper 	mt-2">{{previewValue.title}}</h2>
+		<div class="description-box">
+			@for(item of previewValue.descriptions; track $index) {
+				<div class="mb-3">
+					@switch(item.type) {
+					@case('text') {
+					<markdown lineNumbers>{{item.value}}</markdown>
+					}
+					@case('image') {
+					<img src="{{item.value}}" class="preview-image-size" alt="Image" />
+					}
+					}
+				</div>
+				}
+		</div>
+		<hr class="my-3">
+		@for (item of previewValue.options; track $index) {
+			<div class="form-check">
+				<input class="form-check-input" type="radio" name="options" value="{{item}}" [checked]="item.isCorrect">
+				<label class="form-check-label" for="option{{$index}}">
+					@if (item.type === 'text') {
+						<p>{{item.value}}</p>
+					} @else if (item.type === 'image') {
+						<img src="{{item.value}}" class="preview-image-size" alt="Image" />
+					}
+				</label>
+			</div>
+		}
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Close</button>
+	</div>
+</ng-template>

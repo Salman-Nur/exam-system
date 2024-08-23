@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "PhotoView";
+}
+
+@section Styles {
+    <!-- LightBox2 CSS -->
+    <link href="~/lib/lightbox2/lightbox.min.css" rel="stylesheet" />
+}
+
+<div class="container mt-5">
+    <h1 class="mt-3 mb-3">PhotoViewer</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <a href="https://source.unsplash.com/801x601" data-lightbox="image-1" data-title="Image 1">
+                <img src="https://source.unsplash.com/801x601" alt="Image 1" class="img-thumbnail" />
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="https://source.unsplash.com/801x601" data-lightbox="image-2" data-title="Image 2">
+                <img src="https://source.unsplash.com/201x151" alt="Image 2" class="img-thumbnail" />
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="https://source.unsplash.com/802x602" data-lightbox="image-3" data-title="Image 3">
+                <img src="https://source.unsplash.com/202x152" alt="Image 3" class="img-thumbnail" />
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <a href="https://source.unsplash.com/803x603" data-lightbox="question-1" data-title="Image 4">
+                <img src="https://source.unsplash.com/203x153" alt="Image 4" class="img-thumbnail" />
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="https://source.unsplash.com/804x604" data-lightbox="question-1" data-title="Image 5">
+                <img src="https://source.unsplash.com/204x154" alt="Image 5" class="img-thumbnail" />
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="https://source.unsplash.com/805x605" data-lightbox="question-1" data-title="Image 6">
+                <img src="https://source.unsplash.com/205x155" alt="Image 6" class="img-thumbnail" />
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- jQuery -->
+    <script src="~/lib/jquery/dist/jquery-min-3-6-0.js"></script>
+    <!-- LightBox2 JS -->
+    <script src="~/lib/lightbox2/lightbox.min.js"></script>
+
+    <script type="text/javascript">
+        lightbox.option({
+            'albumLabel': 'Image %1 of %2',
+            'alwaysShowNavOnTouchDevices': false,
+            'disableScrolling': false,
+            'fadeDuration': 600,
+            'fitImagesInViewport': true,
+            'imageFadeDuration': 600,
+            'maxHeight': 9999,
+            'maxWidth': 9999,
+            'positionFromTop': 50,
+            'resizeDuration': 700,
+            'showImageNumberLabel': true,
+            'wrapAround': false
+        });
+    </script>
+}

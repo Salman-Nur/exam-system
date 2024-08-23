@@ -1,0 +1,358 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@section Styles
+{
+    <link rel="stylesheet" href="/lib/tom-select/dist/css/tom-select.bootstrap5.css">
+    <link rel="stylesheet" href="/lib/flatpicker/themes/confetti.css"/>
+    <style>
+        .score-field { display: none; }
+    </style>
+}
+
+<div class="container mt-5">
+    <partial name="_QuestionViewModalPartial"/>
+    <div class="card">
+        <div class="card-body">
+            <div class="card-title">
+                <h2>Create New Exam</h2>
+            </div>
+            <ul class="steps steps-blue steps-counter my-2">
+                <li class="step-item active" id="stepOption1">Exam Details</li>
+                <li class="step-item" id="stepOption2">Select Questions</li>
+            </ul>
+        
+            <form id="examForm" asp-action="Create" asp-area="Admin" asp-controller="Exam" asp-antiforgery="true">
+                <div class="form-step" id="step1">
+                    <div class="mb-3">
+                        <label for="examTitle" class="form-label">Exam Title</label>
+                        <input type="text" class="form-control" id="examTitle" placeholder="Enter exam title">
+                        <div id="examTitleAlert" class="invalid-feedback" style="display: none">Invalid Title</div>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="toggleExamTime">
+                        <label class="form-check-label" for="toggleExamTime">Show Exam Time Range</label>
+                    </div>
+
+                    <div id="timeRange" class="mb-3" style="display: none">
+                        <label for="examTimeRange" class="form-label">Exam Starting Time - Exam Ending Time</label>
+                        <input name="examTimeRange" class="form-control" id="examStartTime" placeholder="Select Date and Time...">
+                        <div id="examStartTimeAlert" class="invalid-feedback" style="display: none">Invalid Exam Time</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="examTime" class="form-label">Exam Duration (minutes)</label>
+                        <input type="number" class="form-control" id="examTime" placeholder="Enter exam duration in minutes">
+                        <div id="examTimeAlert" class="invalid-feedback" style="display: none">Invalid Exam Time</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="examTimeType" class="form-label">Exam Duration Type</label>
+                        <select class="form-select" id="examTimeType">
+                            <option value="question">As per question</option>
+                            <option value="exam">Exam based</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="scoreType" class="form-label">Score Type</label>
+                        <select class="form-select" id="scoreType">
+                            <option value="difficulty">Exam based</option>
+                            <option value="question">Question based</option>
+                        </select>
+                    </div>
+                    <div class="mb-3 score-field">
+                        <label for="score" class="form-label">Score</label>
+                        <input type="number" class="form-control" id="score" placeholder="Enter score">
+                        <div id="scoreAlert" class="invalid-feedback" style="display: none">Please select exam score!</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="passingScore" class="form-label">Minimum Passing Score</label>
+                        <input type="number" class="form-control" id="passingScore" placeholder="Enter minimum passing score">
+                        <div id="passingScoreAlert" class="invalid-feedback" style="display: none">Please set exam passing score!</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="wrongAnswerScore" class="form-label">Wrong Answer Score</label>
+                        <input type="number" class="form-control" id="wrongAnswerScore" placeholder="Enter score for wrong answer">
+                        <div id="wrongAnswerScoreAlert" class="invalid-feedback" style="display: none">Please select wrong answer score!</div>
+                    </div>
+                </div>
+                <div class="form-step" id="step2" style="display: none;">
+                    <div>
+                        <h3 id="selectedQuestionHeader" style="display: none;">Selected Questions</h3>
+                        <div id="selectedQuestionList" class="list-group d-flex flex-row flex-wrap"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="questions" class="form-label">Questions</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="searchTags" placeholder="Search by tags or difficulty">
+                            <button class="btn btn-primary ms-3" style="border-radius: 4px" type="button" id="addQuestion">Search Question</button>
+                        </div>
+                        <div id="questionList" class="list-group"></div>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <button type="button" class="btn btn-primary" id="nextButton">Next</button>
+                    <button type="button" class="btn btn-secondary" id="perviousButton" style="display: none;">Previous</button>
+                    <button type="submit" class="btn btn-success" id="submitButton" style="display: none;">Create Exam</button>
+                </div>
+        </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="/lib/tom-select/dist/js/tom-select.complete.min.js"></script>
+    <script src="/lib/flatpicker/flatpickr.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            $("#examStartTime").flatpickr({
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                mode: "range",
+                minDate: "today"
+            });
+        });
+    </script>
+    
+    <script>
+        $(document).ready(function() {
+            $('#toggleExamTime').on('change', function() {
+                $('#timeRange').toggle();
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            
+            function Alert(idName){
+                let val = $('#'+idName).val();
+                if(!val){
+                    $('#'+idName).addClass('is-invalid').focus();
+                    $('#'+idName+'Alert').show();
+                }
+            }
+        
+            $('#nextButton').on('click', function(e) {
+                e.preventDefault();
+                Alert('examTitle');
+                Alert('examStartTime');
+                Alert('examTime');
+                if ($('#scoreType').val() === 'question') {
+                    Alert('score');
+                }
+                Alert('passingScore');
+                Alert('wrongAnswerScore');
+            });
+            
+            $('#examTitle').on('input', function() {
+                $(this).removeClass('is-invalid');
+                $('#examTitleAlert').hide();
+            });
+            
+            $('#examStartTime').on('input', function() {
+                $('#examStartTimeAlert').hide();
+                $(this).removeClass('is-invalid');
+            });
+            
+            $('#examTime').on('input', function() {
+                $('#examTimeAlert').hide();
+                $(this).removeClass('is-invalid');
+            });
+            
+            $('#score').on('input', function() {
+                $('#scoreAlert').hide();
+                $(this).removeClass('is-invalid');
+            });
+            
+            $('#passingScore').on('input', function() {
+                $(this).removeClass('is-invalid');
+                $('#passingScoreAlert').hide();
+            });
+            
+            $('#wrongAnswerScore').on('input', function() {
+                $(this).removeClass('is-invalid');
+                $('#wrongAnswerScoreAlert').hide();
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#nextButton').on('click', function(e) {
+                let examTitle = $('#examTitle').val();
+                let examStartTime = $('#examStartTime').val();
+                let examTime = $('#examTime').val();
+                let passingScore = $('#passingScore').val();
+                let wrongAnswerScore = $('#wrongAnswerScore').val();
+                if ($('#scoreType').val() === 'question') {
+                    let score = $('#score').val();
+                    if (!score) {
+                        e.preventDefault();
+                        return;
+                    }
+                }
+
+                if (!examTitle || !examStartTime || !examTime || !passingScore || !wrongAnswerScore) {
+                    e.preventDefault();
+                    return;
+                }
+                
+                $('#step1').hide();
+                $('#step2').show();
+                $('#stepOption1').removeClass('active');
+                $('#stepOption2').addClass('active');
+                $(this).hide();
+                $('#submitButton').show();
+                $('#perviousButton').show();
+            });
+            
+            $('#perviousButton').on('click', function() {
+                $('#step2').hide();
+                $('#step1').show();
+                $('#submitButton').hide();
+                $('#perviousButton').hide();
+                $('#nextButton').show();
+                $('#stepOption2').removeClass('active');
+                $('#stepOption1').addClass('active');
+            });
+        });
+    </script>
+    <script>
+        $('#examForm').on('keydown', function(e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+    <script>
+        new TomSelect("#searchTags",{
+            persist: false,
+            createOnBlur: true,
+            create: true
+        });
+    </script>
+    <script>
+        $(function() {
+            $('input[name="examTimeRange"]').daterangepicker({
+                timePicker: true,
+                startDate: moment().startOf('hour'),
+                endDate: moment().startOf('hour').add(32, 'hour'),
+                locale: {
+                    format: 'M/DD hh:mm A'
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#scoreType').change(function() {
+                if ($(this).val() === 'question') {
+                    $('.score-field').show();
+                } else {
+                    $('.score-field').hide();
+                }
+            });
+
+            $('#addQuestion').on('click', function() {
+                const searchTags = $('#searchTags').val();
+                if (searchTags) {
+                    $.ajax({
+                        url: '/Admin/Exam/Demo-Questions',
+                        type: 'GET',
+                        data: { tagName: searchTags },
+                        success: function(questions) {
+                            questions.forEach(function(question) {
+                                const questionId = question.id; // assuming the question object has an id property
+                                const questionText = question.text;
+
+                                $('#questionList').append(`
+                                    <div class="list-group-item" data-id="${questionId}">
+                                        <div class="d-flex justify-content-between">
+                                            <span>${questionText}</span>
+                                            <div class="form-check form-switch">
+                                              <input class="form-check-input question-checkbox" type="checkbox" id="questionSwitch" value="${questionId}">
+                                              <label class="form-check-label" for="questionSwitch"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `);
+                            });
+                        },
+                        error: function(error) {
+                            alert('An error occurred while fetching questions');
+                        }
+                    });
+                }
+            });
+            
+            $('#searchTags').on('input', function() {
+                if ($(this).val() === '') {
+                    $('#questionList').empty();
+                }
+            });
+        });
+    </script>
+    <script>
+        $('#questionList').on('change', '.question-checkbox', function() {
+            const questionItem = $(this).closest('.list-group-item');
+            const selectedQuestionHeader = $('#selectedQuestionHeader');
+            if ($(this).is(':checked')) {
+                // Create a new element for the selected question
+                const selectedQuestionItem = $(`
+                    <div class="list-group-item card flex-fill col-md-3 ms-1 mb-3" data-id="${questionItem.data('id')}">
+                        <div class="card-body">
+                            <span>${questionItem.find('span').text()}</span>
+                            <div>
+                                <a href="#" class="btn btn-primary mt-3">View Question</a>
+                            </div> 
+                        </div>
+                    </div>`);
+
+                // Append the new element to the selected question list
+            $('#selectedQuestionList').append(selectedQuestionItem);
+                if (selectedQuestionHeader.is(':hidden')) {
+                selectedQuestionHeader.show();
+            }
+            } else {
+                // Remove the question item from the selected question list
+                $('#selectedQuestionList').find(`.list-group-item[data-id="${questionItem.data('id')}"]`).remove();
+                if ($('#selectedQuestionList .list-group-item').length === 0) {
+                    selectedQuestionHeader.hide();
+                }
+            }
+        });
+    </script>
+    <script>
+        $('#selectedQuestionList').on('click', 'a', function(e) {
+            e.preventDefault();
+
+            const questionId = $(this).attr('href').split('=')[1];
+
+            $.ajax({
+                url: `/Admin/Exam/Question?id=${questionId}`,
+                type: 'GET',
+                success: function(question) {
+                    $('#questionTitle').text(question.title);
+                    const optionsList = $('<ul></ul>');
+                    question.options.forEach(function(option) {
+                        optionsList.append(`<li>${option}</li>`);
+                    });
+                    $('.modal-body ul').remove();
+                    $('#questionTitle').after(optionsList);
+                    $('#questionModal').modal('show');
+                },
+                error: function(error) {
+                    alert('An error occurred while fetching question details');
+                }
+            });
+        });
+    </script>
+}

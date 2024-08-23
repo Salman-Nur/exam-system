@@ -1,0 +1,78 @@
+<app-navbar></app-navbar>
+<div class="page-header d-print-none">
+    <div class="container-xl">
+        <div class="row g-2 align-items-center">
+            <div class="col">
+                <div class="page-pretitle mt-2">Overview</div>
+                <h2 class="page-title mt-2">Edit Profile</h2>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+                                <div class="row mb-2">
+                                    <div class="col-2 mb-2">
+                                        @if(showSVG){
+                                        <avatar-svg></avatar-svg>
+                                        }
+                                        @if (showImage) {
+                                        <img id="image" [src]="imageSrc" class="" alt="User Image" #imagePreview />
+                                        }
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="error">
+                                                    @if(errorMessage.length>1){
+                                                    <p>{{errorMessage}}</p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <input type="file" id="fileInput" class="form-control mt-6"
+                                            (change)="onFileSelected($event)">
+                                        <a href="" id="openImgUpload" class="mt-6"
+                                            (click)="triggerFileInput($event)">Change Profile
+                                            Picture</a>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row mb-2">
+                                    <div class="col-md-6 mb-2">
+                                        <label class="form-label required" [for]="'name'">Full name</label>
+                                        <input type="text" class="form-control" ngxBootstrapInput formControlName="name"
+                                            placeholder="Enter your name.." [autoCompleteValue]="false" typeValue="text"
+                                            [formControl]="name"
+                                            [isInInvalidStateValue]="reactiveFormUtils.hasValidationError(name)">
+                                        @if (reactiveFormUtils.hasValidationError(name)) {
+                                        <small class="text-danger fw-medium">
+                                            <div *ngIf="name.hasError('required')">Name is required.</div>
+                                            <div *ngIf="name.hasError('maxlength')">Name  Should Be Smaller.</div>
+                                            <div *ngIf="name.hasError('minlength')">Name is too short.</div>
+                                        </small>
+                                        }
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" ngxBootstrapInput
+                                            [autoCompleteValue]="false" typeValue="email" [formControl]="email"
+                                            [value]="email" placeholder="Enter your email..."
+                                            [isInInvalidStateValue]="reactiveFormUtils.hasValidationError(email)"
+                                            formControlName="email">
+                                    </div>
+                                </div>
+
+                                <button type="submit" [disabled]="reactiveFormUtils.disableFormSubmission(profileForm)"
+                                    class="btn btn-primary">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

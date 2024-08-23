@@ -1,0 +1,123 @@
+<div class="page-header d-print-none">
+    <div class="container-xl">
+        <div class="row g-2 align-items-center">
+            <div class="col">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">Overview</div>
+                <h2 class="page-title">Error Logs</h2>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-actions">
+                                <div class="btn-list">
+                                    <button (click)="this.tabulatorDataService.reloadTableData()"
+                                        [disabled]="$$isAnyAjaxOperationRunning()"
+                                        [ngClass]="{ 'btn-loading': $$isAnyAjaxOperationRunning() }"
+                                        class="btn btn-primary btn-icon d-sm-inline-block" type="button">
+                                        @if (!$$isAnyAjaxOperationRunning()) {
+                                        <i class="ti ti-reload icon"></i>
+                                        }
+                                    </button>
+
+                                    <button (click)="delete()"
+                                        [disabled]="$$isAnyAjaxOperationRunning() || $$isSelectedCellDataEmpty()"
+                                        class="btn btn-danger btn-icon d-sm-inline-block" type="button">
+                                        <i class="ti ti-trash icon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <tabulator-basic (ajaxDataInComing)="onAjaxDataIncoming($event)"
+                                (selectedCellData)="onSelectedCellData($event)"
+                                [ajaxRequestOutgoing$]="tabulatorDataService.isAjaxRequestOutgoing$"
+                                [ajaxUrl]="environment.API_BASE_URL.V1.concat('log/Logs')" [columnDefinitions]="columns"
+                                [dataChangedExternally$]="tabulatorDataService.canReloadTable$"
+                                [initialSort]="initialSortRules" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ng-template #deleteModal let-modal>
+            <div class="modal-content">
+                <div class="modal-status bg-danger"></div>
+                <div class="modal-body text-center py-4">
+                    <i class="ti ti-alert-octagon icon mb-2 text-danger icon-lg"></i>
+                    <h3>Are you sure?</h3>
+                    <div class="text-secondary">
+                        Do you really want to remove the data? This cannot be undone.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="w-100">
+                        <div class="row">
+                            <div class="col">
+                                <button (click)="modal.close(false)" class="btn btn-secondary w-100" type="button">
+                                    Cancel
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button (click)="modal.close(true)" class="btn btn-danger w-100" type="button">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template #viewModal let-modal>
+            <div class="modal-fullscreen" [ngClass]="{ 'active': isOpen }">
+                <div class="card row">
+                    <div class="col-12">
+                        <div class="card-header">
+                            <h3 class="card-title">Occurred on {{ time }}
+                                @if (levelName=='trace') {
+                                <span class="badge bg-blue" style="color: white;">Trace</span>
+                                }
+                                @else if(levelName=='information'){
+                                <span class="badge bg-azure" style="color: white;">Information</span>
+                                }
+                                @else if(levelName=='warning'){
+                                <span class="badge bg-yellow" style="color: white;"></span>
+                                }
+                                @else if(levelName=='debug'){
+                                <span class="badge bg-green" style="color: white;">Green</span>
+                                }
+                                @else if(levelName=='error'){
+                                <span class="badge bg-red" style="color: white;">Red</span>
+                                }
+                                @else if(levelName=='critical'){
+                                <span class="badge bg-purple" style="color: white;">Critical</span>
+                                }
+
+                            </h3>
+                            <div class="card-actions btn-actions">
+                                <a (click)="modal.dismiss()" class="btn btn-action btn-danger">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M18 6l-12 12"></path>
+                                        <path d="M6 6l12 12"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body p-0" style="min-height: 500px;align-items: center;font-size: large;">
+                            <p class="text-center">{{ message }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </div>
+</div>

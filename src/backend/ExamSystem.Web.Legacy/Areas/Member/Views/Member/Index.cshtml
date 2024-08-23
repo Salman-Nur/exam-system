@@ -1,0 +1,223 @@
+﻿@model dynamic
+@{
+    ViewBag.Title = "Member";
+    Layout = "_Layout";
+}
+<div class="page-header d-print-none">
+    <div class="container-xl">
+        <div class="row g-2 align-items-center">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Logged Member List</h3>
+                    </div>
+                    <div class="card-body border-bottom py-3">
+                        <div class="d-flex">
+                            <div class="text-muted">
+                                Show
+                                <div class="mx-2 d-inline-block">
+                                    <input type="text" class="form-control form-control-sm" value="8" size="3" aria-label="Invoices count">
+                                </div>
+                                entries
+                            </div>
+                            <div class="ms-auto text-muted">
+                                Search:
+                                <div class="ms-2 d-inline-block">
+                                    <input type="text" class="form-control form-control-sm" aria-label="Search invoice">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table card-table table-vcenter text-nowrap datatable">
+                            <thead>
+                                <tr>
+                                    <th class="w-1"><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select all invoices"></th>
+                                    <th class="w-1">
+                                        Sl.No. <!-- Download SVG icon from http://tabler-icons.io/i/chevron-up -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm icon-thick" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M6 15l6 -6l6 6" /></svg>
+                                    </th>
+                                    <th >Name</th>
+                                    <th >Email</th>
+                                    <th >Exam Course</th>
+                                    <th>Join Date</th>
+                                    <th>Marks</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select member"></td>
+                                    <td><span class="text-muted">1</span></td>
+                                    <td>
+                                        <span class="avatar avatar-sm rounded-circle" style="background-image: url(/tabler/static/avatars/000f.jpg)"></span>
+                                        <span style="display: inline-block;padding-bottom: 5px;">Jhon Deo</span>
+                                    </td>
+                                    <td>
+                                        jhon@gmail.com
+                                    </td>
+                                    <td>
+                                        Asp.net
+                                    </td>
+                                    <td>
+                                        15 Mar 2024
+                                    </td>
+                                    <td>587</td>
+                                </tr>
+                                <tr>
+                                    <td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select member"></td>
+                                    <td><span class="text-muted">2</span></td>
+                                    <td>
+                                        <span class="avatar avatar-sm rounded-circle" style="background-image: url(/tabler/static/avatars/001m.jpg)"></span>
+                                        <span style="display: inline-block;padding-bottom: 5px;">Jhon Deo</span>
+                                    </td>
+                                    <td>
+                                        jhon@gmail.com
+                                    </td>
+                                    <td>
+                                        Asp.net
+                                    </td>
+                                    <td>
+                                        15 Mar 2024
+                                    </td>
+                                    <td>187</td>
+                                </tr>
+                                <tr>
+                                    <td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select member"></td>
+                                    <td><span class="text-muted">3</span></td>
+                                    <td>
+                                        <span class="avatar avatar-sm rounded-circle" style="background-image: url(/tabler/static/avatars/003m.jpg)"></span>
+                                        <span style="display: inline-block;padding-bottom: 5px;">John Deo</span>
+                                    </td>
+                                    <td>
+                                        john@gmail.com
+                                    </td>
+                                    <td>
+                                        Asp.net
+                                    </td>
+                                    <td>
+                                        15 Mar 2024
+                                    </td>
+                                    <td>887</td>
+                                </tr>
+                                <tr>
+                                    <td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select member"></td>
+                                    <td><span class="text-muted">4</span></td>
+                                    <td>
+                                        <span class="avatar avatar-sm rounded-circle" style="background-image: url(/tabler/static/avatars/003f.jpg)"></span>
+                                        <span style="display: inline-block;padding-bottom: 5px;">John Deo</span>
+                                    </td>
+                                    <td>
+                                        john@gmail.com
+                                    </td>
+                                    <td>
+                                        Asp.net
+                                    </td>
+                                    <td>
+                                        15 Mar 2024
+                                    </td>
+                                    <td>887</td>
+                                </tr>
+                                <tr>
+                                    <td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select member"></td>
+                                    <td><span class="text-muted">5</span></td>
+                                    <td>
+                                        <span class="avatar avatar-sm rounded-circle" style="background-image: url(/tabler/static/avatars/002m.jpg)"></span>
+                                        <span style="display: inline-block;padding-bottom: 5px;">John Deo</span>
+                                    </td>
+                                    <td>
+                                        john@gmail.com
+                                    </td>
+                                    <td>
+                                        Asp.net
+                                    </td>
+                                    <td>
+                                        15 Mar 2024
+                                    </td>
+                                    <td>487</td>
+                                </tr>
+                                <tr>
+                                    <td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select member"></td>
+                                    <td><span class="text-muted">6</span></td>
+                                    <td>
+                                        <span class="avatar avatar-sm rounded-circle" style="background-image: url(/tabler/static/avatars/002f.jpg)"></span>
+                                        <span style="display: inline-block;padding-bottom: 5px;">John Deo</span>
+                                    </td>
+                                    <td>
+                                        john@gmail.com
+                                    </td>
+                                    <td>
+                                        Asp.net
+                                    </td>
+                                    <td>
+                                        15 Mar 2024
+                                    </td>
+                                    <td>387</td>
+                                </tr>
+                                <tr>
+                                    <td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select member"></td>
+                                    <td><span class="text-muted">7</span></td>
+                                    <td>
+                                        <span class="avatar avatar-sm rounded-circle" style="background-image: url(/tabler/static/avatars/000m.jpg)"></span>
+                                        <span style="display: inline-block;padding-bottom: 5px;">John Deo</span>
+                                    </td>
+                                    <td>
+                                        john@gmail.com
+                                    </td>
+                                    <td>
+                                        Asp.net
+                                    </td>
+                                    <td>
+                                        15 Mar 2024
+                                    </td>
+                                    <td>787</td>
+                                </tr>
+                                <tr>
+                                    <td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select member"></td>
+                                    <td><span class="text-muted">8</span></td>
+                                    <td>
+                                        <span class="avatar avatar-sm rounded-circle" style="background-image: url(/tabler/static/avatars/000m.jpg)"></span>
+                                        <span style="display: inline-block;padding-bottom: 5px;">John Deo</span>
+                                    </td>
+                                    <td>
+                                        john@gmail.com
+                                    </td>
+                                    <td>
+                                        Asp.net
+                                    </td>
+                                    <td>
+                                        15 Mar 2024
+                                    </td>
+                                    <td>687</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer d-flex align-items-center">
+                        <p class="m-0 text-muted">Showing <span>1</span> to <span>8</span> of <span>16</span> entries</p>
+                        <ul class="pagination m-0 ms-auto">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M15 6l-6 6l6 6" /></svg>
+                                    prev
+                                </a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#">4</a></li>
+                            <li class="page-item"><a class="page-link" href="#">5</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">
+                                    next <!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 6l6 6l-6 6" /></svg>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

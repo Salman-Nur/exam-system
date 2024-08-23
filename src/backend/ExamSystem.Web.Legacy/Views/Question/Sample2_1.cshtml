@@ -1,0 +1,208 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ExamSystem.Web.Models.QuestionPaperModel
+@{
+    ViewData["Title"] = "Quiz";
+}
+
+@section Styles
+{
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/QuestionPaper.css" rel="stylesheet" />
+}
+
+<body class="cyan-100">
+    <form style="width: 200mm; margin: 0 auto;">
+        <div class="container mt-0">
+            <div class="card my-2">
+                <div class="card-body p-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="flex-grow-1">@Model.Title</h3>
+                        <div class="text-right">
+                            <p class="mb-0"><span class="fw-bold text-primary">Total Points:</span> @Model.TotalPoints</p>
+                            <p class="mb-0"><span class="text-danger fw-bold">Time:</span> @Model.Time min</p>
+                        </div>
+                    </div>
+                    @if (Model.Description != null)
+                    {
+                        <p><span class="text-danger fw-bold">Note:</span> @Model.Description</p>
+                    }
+                    <div id="stopwatch" class="alert alert-success font-weight-bold" role="alert">00:@Model.Time:00</div>
+                </div>
+            </div>
+            <div id="questionsContainer">
+                @for (int i = 0; i < Model.Questions.Count; i++)
+                {
+                    <div class="question-card card my-3> @if (i != 0) { <text> d-none </text> }" data-question-index="@i">
+                        <div class="card-body"style="height:300px; overflow-y:auto;">
+                            <div class="row">
+                                <div class="col-10">
+                                    <h1 class="card-title">
+                                        @if (i == 0 && !string.IsNullOrEmpty(Model.ImageUrl))
+                                        {
+                                            <img src="@Model.ImageUrl" alt="Question image" width="100" height="90">
+                                        }
+                                        <div class="">
+                                            <pre class="gray-200"><strong>@Model.Questions[i]</strong></pre>
+                                        </div>
+                                    </h1>
+                                </div>
+                                <div class="col-2 text-right">
+                                    <p class="mb-0">@Model.Points points</p>
+                                </div>
+                            </div>
+                            @foreach (var option in Model.Options[i])
+                            {
+                                <div class="row">
+                                    <label class="col-10">
+                                        @if (option.StartsWith("http"))
+                                        {
+                                            <input type="checkbox" value="@option" />
+                                            <img src="@option" alt="Option image" width="70" height="60">
+                                        }
+                                        else
+                                        {
+                                            <pre class="bg-white px-3 py-1 mb-0" style="font-size: 0.875rem;"><input type="checkbox" value="@option" /> @option</pre>
+                                        }
+                                    </label>
+                                    <br>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="text-center mt-3">
+                <div class="row">
+                    <div class="col text-left">
+                        <button type="button" class="btn btn-primary" id="prevBtn" onclick="showQuestion('prev')">Previous</button>
+                    </div>
+                    <div class="col text-center">
+                        <button type="submit" id="submitBtn" class="btn btn-primary" style="display: none;">Submit</button>
+                    </div>
+                    <div class="col text-right">
+                        <button type="button" class="btn btn-primary" id="nextBtn" onclick="showQuestion('next')">Next</button>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <div class="text-center">
+                            @for (int i = 0; i < Model.Questions.Count; i++)
+                            {
+                                <button type="button" class="btn btn-outline-primary btn-sm mr-2" onclick="goToQuestion(@i)">@(i + 1)</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+
+@section Scripts
+{
+    <script>
+        var currentQuestionIndex = 0;
+        var questionCards = document.querySelectorAll('.question-card');
+        var submitButton = document.getElementById('submitBtn');
+        var prevButton = document.getElementById('prevBtn');
+        var nextButton = document.getElementById('nextBtn');
+
+        function showQuestion(direction) {
+            questionCards[currentQuestionIndex].classList.add('d-none');
+
+            if (direction === 'next') {
+                currentQuestionIndex++;
+            } else if (direction === 'prev') {
+                currentQuestionIndex--;
+            }
+
+            if (currentQuestionIndex >= questionCards.length) {
+                currentQuestionIndex = questionCards.length - 1;
+            } else if (currentQuestionIndex < 0) {
+                currentQuestionIndex = 0;
+            }
+
+            questionCards[currentQuestionIndex].classList.remove('d-none');
+
+            if (currentQuestionIndex === 0) {
+                prevButton.style.display = 'none';
+            } else {
+                prevButton.style.display = 'inline-block';
+            }
+
+            if (currentQuestionIndex === questionCards.length - 1) {
+                nextButton.style.display = 'none';
+                submitButton.style.display = 'inline-block';
+            }
+            else {
+                nextButton.style.display = 'inline-block';
+                submitButton.style.display = 'none';
+            }
+        }
+
+        function goToQuestion(index) {
+            questionCards[currentQuestionIndex].classList.add('d-none');
+            currentQuestionIndex = index;
+            questionCards[currentQuestionIndex].classList.remove('d-none');
+
+            if (currentQuestionIndex === 0) {
+                prevButton.style.display = 'none';
+            } else {
+                prevButton.style.display = 'inline-block';
+            }
+
+            if (currentQuestionIndex === questionCards.length - 1) {
+                nextButton.style.display = 'none';
+                submitButton.style.display = 'inline-block';
+            }
+            else {
+                nextButton.style.display = 'inline-block';
+                submitButton.style.display = 'none';
+            }
+        }
+
+        questionCards[currentQuestionIndex].classList.remove('d-none');
+        prevButton.style.display = 'none';
+
+        var stopwatchDisplay = document.getElementById('stopwatch');
+        var modelTime = @Model.Time * 60 * 1000;
+        var endTime = Date.now() + modelTime;
+        var timerInterval;
+
+        function startStopwatch() {
+            timerInterval = setInterval(updateStopwatch, 1000);
+        }
+
+        function updateStopwatch() {
+            var currentTime = Date.now();
+            var remainingTime = endTime - currentTime;
+
+            if (remainingTime <= 0) {
+                remainingTime = 0;
+                clearInterval(timerInterval);
+                submitButton.disabled = true;
+            }
+
+            var formattedTime = formatTime(remainingTime);
+            stopwatchDisplay.textContent = formattedTime;
+
+            if (remainingTime <= 60 * 1000) {
+                stopwatchDisplay.classList.remove('alert-success');
+                stopwatchDisplay.classList.add('alert-danger');
+            }
+        }
+
+        function formatTime(milliseconds) {
+            var hours = Math.floor(milliseconds / (1000 * 60 * 60));
+            var minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((milliseconds % (1000 * 60)) / 1000);
+            return (
+                (hours < 10 ? '0' : '') + hours + ':' +
+                (minutes < 10 ? '0' : '') + minutes + ':' +
+                (seconds < 10 ? '0' : '') + seconds
+            );
+        }
+
+        startStopwatch();
+    </script>
+}

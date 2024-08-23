@@ -1,0 +1,157 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@section Styles {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        #start-btn{
+            background-color: rgb(113,30,96);
+        }
+
+        #start-btn:hover{
+                background-color: white;
+                border: 1px solid rgb(113,30,96);;
+                border-radius:2px;
+                color: rgb(113,30,96);
+                
+        }
+        .question-header {
+            background: linear-gradient(to right, rgb(113, 30, 96), rgb(32, 119, 187));
+        }
+
+        .custom-option {
+            padding: 0.5rem;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+            transition: border-color 0.3s ease, padding 0.3s ease;
+            cursor: pointer;
+        }
+
+        .option-custom {
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .option-custom:hover {
+                transform: scale(1.05);
+                opacity: 1 !important;
+                border-color: rgb(113, 30, 96) !important;
+            }
+
+        .custom-option.selected {
+            border-color: blue;
+        }
+    </style>
+}
+
+<div class="container my-3">
+    <div class="row">
+        <div class="col-md-8 col-lg-9 question-header p-3 rounded flex-md-row flex-column mb-md-0 mb-3">
+            <h1 class="m-3 fs-1 text-white">Answer all the questions</h1>
+        </div>
+        <div class="col-md-4 col-lg-3 d-flex flex-column align-items-center mt-md-0 my-2">
+            <button type="button" class="btn btn-primary w-100 w-md-75 mb-2 p-3" id="start-btn" onclick="startTest()">Start test</button>
+            <h4 class="fs-4 text-muted">Time remaining: <span id="timer" class="text-danger">20:00</span></h4>
+        </div>
+    </div>
+
+    <hr class="col-md-8 col-lg-9" />
+
+    <div class="row">
+        <div class="col-md-8 col-md-9">
+            <form method="post" action="/YourController/YourAction">
+                @{
+                    int x = 1;
+                    for (int j = 0; j < 3; j++)
+                    {
+                        <div class="mb-3 border border-2 rounded rounded-2 border-custom p-3 d-block mx-auto shadow">
+                            <div class="border-bottom border-1 border-danger d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span><i class="fa-regular fa-circle-question"></i></span>
+                                    <h4 class="d-inline-block fs-3">Sample question @j: What's your name?</h4>
+                                </div>
+                            </div>
+                            <div class="row p-2 justify-content-center">
+                                @{
+                                    for (int i = 0; i < 5; i++)
+                                    {
+                                        <div class="col-md-5 col-sm-6 p-1 mx-1 my-1 option-custom border border-2 rounded-2 opacity-75">
+                                            <div class="form-check d-flex align-items-center">
+                                                <input class="form-check-input mx-2 p-2 text-dark" type="radio" name="question@(j)" id="option@(j)_@(i)">
+                                                <label class="form-check-label custom-option fs-3" for="option@(j)_@(i)">
+                                                    Option @(i + 1)
+                                                </label>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                <div class="col-md-5 col-sm-6 p-1 mx-1 my-1 option-custom border border-2 rounded-2 opacity-75">
+                                    <div class="form-check d-flex align-items-center">
+                                        <input class="form-check-input mx-2 p-2 text-dark" type="radio" name="question@(j)" id="option@(j)_@(x)">
+                                        <label class="form-check-label custom-option fs-3" for="option@(j)_@(x++)">
+                                            <img src="~/images/userPicture.png" class="img-fluid" style="width: 75px; height: auto;" />
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                <div class="d-flex flex-column flex-md-row justify-content-md-end">
+                    <button type="submit" class="btn btn-primary w-100 w-md-auto p-2">Submit test</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://kit.fontawesome.com/3ae1ad0474.js" crossorigin="anonymous"></script>
+    <script>
+        function startTest() {
+            document.getElementById('start-btn').disabled = true;
+            var timerElement = document.getElementById('timer');
+            var endTime = Date.now() + 20 * 60 * 1000;
+            localStorage.setItem('endTime', endTime);
+            var countdown = setInterval(function () {
+                var now = Date.now();
+                var timeRemaining = endTime - now;
+                if (timeRemaining <= 0) {
+                    clearInterval(countdown);
+                    timerElement.textContent = '00:00';
+                    localStorage.removeItem('endTime');
+                } else {
+                    var minutes = Math.floor(timeRemaining / 60000);
+                    var seconds = Math.floor((timeRemaining % 60000) / 1000);
+                    timerElement.textContent =
+                        (minutes < 10 ? '0' : '') + minutes + ':' +
+                        (seconds < 10 ? '0' : '') + seconds;
+                }
+            }, 1000);
+        }
+
+        window.onload = function () {
+            var endTime = localStorage.getItem('endTime');
+            if (endTime) {
+                var timeRemaining = endTime - Date.now();
+                if (timeRemaining > 0) {
+                    document.getElementById('start-btn').disabled = true;
+                    var countdown = setInterval(function () {
+                        var now = Date.now();
+                        var timeRemaining = endTime - now;
+                        if (timeRemaining <= 0) {
+                            clearInterval(countdown);
+                            document.getElementById('timer').textContent = '00:00';
+                            localStorage.removeItem('endTime');
+                        } else {
+                            var minutes = Math.floor(timeRemaining / 60000);
+                            var seconds = Math.floor((timeRemaining % 60000) / 1000);
+                            document.getElementById('timer').textContent =
+                                (minutes < 10 ? '0' : '') + minutes + ':' +
+                                (seconds < 10 ? '0' : '') + seconds;
+                        }
+                    }, 1000);
+                }
+            }
+        }
+    </script>
+}
+

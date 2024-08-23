@@ -1,0 +1,61 @@
+<div class="tag-container" (click)="clearMessage()">
+  <div class="card tag-manager-card">
+    @if(message && messageType == "success"){
+      <div class="message-success">
+        {{message}}
+      </div>
+    }
+    @else if(message){
+      <div class="message-error">
+        {{message}}
+      </div>
+    }
+    <h4 class="card-title">Tag Management</h4>
+    <div class="card-body">
+      <form [formGroup]="tagForm" (ngSubmit)="onSubmit()" class="tag-form">
+        <div class="form-group tag-form-field">
+          <label for="tagName"><h3>Tag Name</h3></label>
+          <input type="text" class="form-control" id="tagName" formControlName="name" required>
+        </div>
+        <div class="form-buttons">
+          <button type="submit" class="btn btn-primary">{{ editMode ? 'Update Tag' : 'Add Tag' }}</button>
+          <button type="button" class="btn btn-secondary" (click)="resetForm()">Cancel</button>
+        </div>
+      </form>
+      <div class="tag-list">
+        @for (tag of tags; track $index) {
+          <div class="card tag-item">
+            <div class="card-body tag-content">
+              <span class="tag-text">{{ tag.name }}</span>
+              <div class="tag-buttons">
+                <button class="btn btn-primary btn-sm" (click)="onEdit(tag)">
+                  <i class="ti ti-pencil"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" (click)="onDelete(tag.id)">
+                  <i class="ti ti-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="pagination-container">
+        <ngb-pagination [collectionSize]="totalTags"
+                        [(page)]="pageIndex"
+                        [pageSize]="pageSize"
+                        [maxSize]="5"
+                        [rotate]="true"
+                        (pageChange)="onPageChange($event)">
+        </ngb-pagination>
+        <div class="form-group page-size-select">
+          <label for="pageSize">Page Size</label>
+          <select id="pageSize" class="form-control" [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+            @for (size of pageSizeOptions; track $index) {
+              <option [value]=size>{{size}}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

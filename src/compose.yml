@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ./backend/
+      dockerfile: ExamSystem.HttpApi/Dockerfile
+    image: devskill/examsystem.httpapi
+    env_file:
+      - /backend/ExamSystem.HttpApi/.env
+    volumes:
+      - ./docker_files/dataprotection-keys:/temp/dataprotection-keys
+      - exam-system-api-data:/app/Logs
+      - ./docker_files/logs/api:/app/Logs
+    ports:
+      - "5065:5065"
+    entrypoint: ["dotnet", "ExamSystem.HttpApi.dll"]
+
+  angular:
+    image: devskill/exam-system-angular
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    depends_on:
+      - api
+
+volumes:
+  exam-system-api-data:

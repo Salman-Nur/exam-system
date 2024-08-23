@@ -1,0 +1,167 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using System.Text.Json
+@model ExamSystem.Web.Models.TomSelectViewModel
+
+@{
+Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+    @{
+    <title>Tabulator</title>
+    }
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="~/tabler/css/tabler.min.css" rel="stylesheet" asp-append-version="true" />
+    <partial name="_TomSelectPartial" />
+
+    <style>
+        :root {
+            --tblr-font-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+        }
+
+        body {
+            font-feature-settings: "cv03", "cv04", "cv11";
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="page-wrapper">
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="mb-3">
+                        <form asp-controller="TomSelect" asp-action="Index" asp-antiforgery="true" id="md-form" class="mb-3">
+                            <div class="form-label" asp-for="SelectedTags">
+                                Tags <span class="text-muted">(max @Model.MaxTags) </span>
+                            </div>
+                            <div class="mb-4">
+                                <select asp-for="SelectedExistingTagIdentifiers" multiple id="selected-tags" type="text" class="form-control">
+                                    @foreach (var tag in await Model.FetchTagsAsync())
+                                    {
+                                    if (Model.SelectedExistingTagIdentifiers.Contains(tag.Id))
+                                    {
+                                    <option value="@tag.Id" selected>@tag.Title</option>
+                                    }
+                                    else
+                                    {
+                                    <option value="@tag.Id">@tag.Title</option>
+                                    }
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="form-footer d-flex justify-content-center">
+                                <button type="submit" id="md-submit-btn" class="btn btn-primary w-50">
+                                    Submit
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+<script src="~/tabler/js/tabler.min.js" asp-append-version="true"></script>
+<partial name="_ValidationScriptsPartial" />
+
+<script>
+    const tagMaxLength = @Model.TagMaxLength;
+    const maxTags = @Model.MaxTags;
+    const canCreate = @Html.Raw(JsonSerializer.Serialize(Model.CanCreate));
+    const newOptions = new Set();
+    
+    const select = new TomSelect(document.getElementById('selected-tags'), {
+        plugins: {
+            remove_button: {
+                title: 'Remove this item',
+            }
+        },
+        create: canCreate,
+        maxItems: maxTags,
+        persist: false,
+        copyClassesToDropdown: false,
+        dropdownParent: 'body',
+        controlInput: '<input>',
+        createFilter: function (input) {
+            let processedText = input.toLowerCase();
+            if (processedText.length > tagMaxLength) {
+                return false;
+            }
+            let isValid = true;
+            for (let key in this.options) {
+                if (this.options.hasOwnProperty(key)) {
+                    processedText = processedText.trim();
+                    if (this.options[key]?.text === processedText) {
+                        isValid = false;
+                    }
+                }
+            }
+            return isValid;
+        },
+        onItemAdd: function (value, _) {
+            if (this.userOptions.hasOwnProperty(value)) {
+                newOptions.add(value.trim());
+            }
+        },
+        render: {
+            item: function (data, escape) {
+                if (data?.customProperties) {
+                    return '<div><span class="dropdown-item-indicator">' + data.customProperties + '</span>' + escape(data.text) + '</div>';
+                }
+                return '<div>' + escape(data.text) + '</div>';
+            },
+            option: function (data, escape) {
+                if (data?.customProperties) {
+                    return '<div><span class="dropdown-item-indicator">' + data.customProperties + '</span>' + escape(data.text) + '</div>';
+                }
+                return '<div>' + escape(data.text) + '</div>';
+            },
+        },
+    });
+
+    select.on('item_remove', function (value) {
+        newOptions.delete(value);
+    });
+
+    document.getElementById('md-form').addEventListener('submit', function () {
+        const itemsToRemove = [];
+
+        newOptions.forEach(function (value) {
+            itemsToRemove.push(value);
+            let hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = '@nameof(Model.NewCreatedTags)';
+            hiddenInput.value = value;
+            document.getElementById('md-form').appendChild(hiddenInput);
+        })
+
+        itemsToRemove.forEach(function (item) {
+            select.removeItem(item);
+        });
+    });
+</script>
+
+</body>
+
+</html>

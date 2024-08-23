@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamSystem.Web.Legacy", "ExamSystem.Web.Legacy\ExamSystem.Web.Legacy.csproj", "{1BE7AAF1-66F3-4012-AC94-2A34F19F524D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamSystem.Application", "ExamSystem.Application\ExamSystem.Application.csproj", "{51DDF80B-4E22-4639-852B-20D42D8BC066}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamSystem.Infrastructure", "ExamSystem.Infrastructure\ExamSystem.Infrastructure.csproj", "{83CD455F-886E-492A-B4EB-64C8C6E88EF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamSystem.Domain", "ExamSystem.Domain\ExamSystem.Domain.csproj", "{E9ED128C-B275-49CD-A3EB-748DCAE4E7E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamSystem.EmailWorker", "ExamSystem.EmailWorker\ExamSystem.EmailWorker.csproj", "{6A816AB5-62D3-45CE-8BA3-B3BAA5FC7AC2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamSystem.HttpApi", "ExamSystem.HttpApi\ExamSystem.HttpApi.csproj", "{7AFC8F71-572E-465B-A4D8-7A3633C75E84}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{89B0629F-3207-4628-BA75-F0CB0E670351}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevSkill.AWS", "DevSkill.AWS\DevSkill.AWS.csproj", "{A1C3C106-3858-429E-BCA5-1FFC9D2A5C4C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1BE7AAF1-66F3-4012-AC94-2A34F19F524D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BE7AAF1-66F3-4012-AC94-2A34F19F524D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BE7AAF1-66F3-4012-AC94-2A34F19F524D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BE7AAF1-66F3-4012-AC94-2A34F19F524D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51DDF80B-4E22-4639-852B-20D42D8BC066}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51DDF80B-4E22-4639-852B-20D42D8BC066}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51DDF80B-4E22-4639-852B-20D42D8BC066}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51DDF80B-4E22-4639-852B-20D42D8BC066}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83CD455F-886E-492A-B4EB-64C8C6E88EF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83CD455F-886E-492A-B4EB-64C8C6E88EF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83CD455F-886E-492A-B4EB-64C8C6E88EF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83CD455F-886E-492A-B4EB-64C8C6E88EF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9ED128C-B275-49CD-A3EB-748DCAE4E7E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9ED128C-B275-49CD-A3EB-748DCAE4E7E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9ED128C-B275-49CD-A3EB-748DCAE4E7E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9ED128C-B275-49CD-A3EB-748DCAE4E7E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A816AB5-62D3-45CE-8BA3-B3BAA5FC7AC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A816AB5-62D3-45CE-8BA3-B3BAA5FC7AC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A816AB5-62D3-45CE-8BA3-B3BAA5FC7AC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A816AB5-62D3-45CE-8BA3-B3BAA5FC7AC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AFC8F71-572E-465B-A4D8-7A3633C75E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AFC8F71-572E-465B-A4D8-7A3633C75E84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AFC8F71-572E-465B-A4D8-7A3633C75E84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AFC8F71-572E-465B-A4D8-7A3633C75E84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1C3C106-3858-429E-BCA5-1FFC9D2A5C4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1C3C106-3858-429E-BCA5-1FFC9D2A5C4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1C3C106-3858-429E-BCA5-1FFC9D2A5C4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1C3C106-3858-429E-BCA5-1FFC9D2A5C4C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

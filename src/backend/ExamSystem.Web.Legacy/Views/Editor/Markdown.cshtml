@@ -1,0 +1,176 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ExamSystem.Web.Models.MarkdownEditorViewModel
+
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+
+    @{
+        <title>Markdown Editor</title>
+    }
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link href="~/tabler/css/tabler.min.css" rel="stylesheet" asp-append-version="true"/>
+    <partial name="_MarkdownEditorPartial"/>
+
+    <style>
+        :root {
+            --tblr-font-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+        }
+
+        body {
+            font-feature-settings: "cv03", "cv04", "cv11";
+        }
+
+        #preview-tab {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+
+        pre code {
+            tab-size: 2;
+        }
+    </style>
+
+</head>
+
+<body>
+<div class="page">
+    <div class="page-wrapper">
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs nav-fill" data-bs-toggle="tabs">
+                            <li class="nav-item">
+                                <a href="#editor-tab" class="nav-link active" data-bs-toggle="tab">
+                                    Editor
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#md-preview-tab-container" class="nav-link" id="md-prev-window-trigger" data-bs-toggle="tab">
+                                    Preview
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="tab-pane active show" id="editor-tab">
+                                <div class="mb-3">
+                                    <form asp-controller="Editor" asp-action="Markdown" asp-antiforgery="true"
+                                          id="md-form" class="mb-3">
+
+                                        <div>
+                                            <label asp-for="Body" class="form-label">Body </label>
+                                            <textarea asp-for="Body" id="md-text-area"></textarea>
+                                            <span asp-validation-for="Body" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-footer d-flex justify-content-center">
+                                            <button type="submit" id="md-submit-btn" class="btn btn-primary w-50">
+                                                Submit
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="tab-pane p-2" id="md-preview-tab-container">
+                                <div id="md-preview-tab"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+<script src="~/tabler/js/tabler.min.js" asp-append-version="true"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script>
+
+    markdownEditor("md-form", "md-text-area", "md-prev-window-trigger", "md-preview-tab-container", "md-preview-tab");
+
+    function markdownEditor(formId, textAreaId, previewTabWindowTriggerId, previewTabContainerId, mdPreviewTabId) {
+        const replaceRegex = /^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/;
+        const emptyTesterRegex = /\b\w+\b/;
+        const { markedHighlight } = globalThis.markedHighlight;
+        const mdForm = document.getElementById(formId);
+        const mdTextArea = document.getElementById(textAreaId);
+        const mdPreviewTabWindowTrigger = document.getElementById(previewTabWindowTriggerId);
+        const mdPreviewTabContainer = document.getElementById(previewTabContainerId);
+        const mdPreviewTab = document.getElementById(mdPreviewTabId);
+
+        const easyMDE = new EasyMDE({
+            toolbar: ["bold", "italic", "strikethrough", "|", "heading-1", "heading-2", "heading-3", "|", "code", "quote", "unordered-list", "ordered-list", "|", "link", "undo", "redo", "|", "fullscreen", "guide"],
+            element: mdTextArea,
+            spellChecker: false,
+            autofocus: true,
+            tabSize: 2,
+        });
+
+        const markedWithSyntaxHighlighter = new marked.Marked(
+            markedHighlight({
+                langPrefix: 'hljs language-',
+                highlight(code, lang, info) {
+                    if (hljs.getLanguage(lang)) {
+                        return hljs.highlight(code, { language: lang }).value;
+                    } else {
+                        return hljs.highlightAuto(code).value;
+                    }
+                }
+            })
+        );
+
+        const easyMdeContainer = document.querySelector(".EasyMDEContainer");
+        let height = easyMdeContainer.clientHeight;
+
+        easyMDE.codemirror.on("change", () => {
+            height = easyMdeContainer.clientHeight;
+
+        });
+
+        mdPreviewTabWindowTrigger.addEventListener('focus', function (e) {
+            if (emptyTesterRegex.test(easyMDE.value())) {
+                mdPreviewTab.innerHTML =
+                    DOMPurify.sanitize(markedWithSyntaxHighlighter.parse(easyMDE.value().replace(replaceRegex, "")));
+
+                mdPreviewTabContainer.style.minHeight = height + "px";
+
+            } else {
+                mdPreviewTabContainer.style.minHeight = height + "px";
+
+                mdPreviewTab.innerHTML = `
+                <div class="empty col" id="md-preview-empty">
+                  <div class="empty-img"><img src="/tabler/static/illustrations/undraw_quitting_time_dm8t.svg"
+                      height="128" alt="">
+                  </div>
+                  <p class="empty-title">No preview found</p>
+                </div>`;
+            }
+        });
+
+        mdForm.addEventListener('submit', function (e) {
+            mdTextArea.value = easyMDE.value().replace(replaceRegex, "");
+        });
+    }
+
+
+
+
+</script>
+
+</body>
+
+</html>

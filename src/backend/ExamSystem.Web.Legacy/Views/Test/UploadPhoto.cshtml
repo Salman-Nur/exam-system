@@ -1,0 +1,14 @@
+@model ExamSystem.Web.Models.ImageUploadViewModel;
+
+<div class="card">
+    <div class="card-body">
+        <form asp-controller="Test" asp-action="UploadPhoto" enctype="multipart/form-data"
+              asp-antiforgery="true" autocomplete="off">
+            <input asp-for="Image" type="file" accept="image/png, image/jpg, image/jpeg"/>
+            <br><br>
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
